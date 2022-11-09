@@ -5,10 +5,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File file = new File("..//JD_CP3_HomeTask11/basket.txt");
+        File serializeFile = new File("..//JD_CP3_HomeTask11/basket.bin");
         Basket basket;
-        if (file.exists()) {
-            basket = Basket.loadFromTxtFile(file);
+        if (serializeFile.exists()) {
+            basket = Basket.loadFromBinFile(serializeFile);
             basket.showGoods();
             basket.printCart();
         } else {
@@ -26,7 +26,7 @@ public class Main {
 
             if (inputString.equals("end")) {
                 basket.printCart();
-                basket.saveTxt(file);
+                basket.saveBin(serializeFile);
                 scanner.close();
                 break;
             } else {

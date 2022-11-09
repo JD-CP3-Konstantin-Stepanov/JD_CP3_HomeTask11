@@ -32,59 +32,6 @@ public class Basket implements Serializable {
         System.out.println("Итого: " + sumProducts + " руб");
     }
 
-
-    public void saveTxt(File textFile) {
-        try (PrintWriter out = new PrintWriter(textFile)) {
-            out.print(strReplace(Arrays.toString(this.productName)) + ";"
-                    + strReplace(Arrays.toString(this.productPrice)) + ";"
-                    + strReplace(Arrays.toString(this.basket)));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private String strReplace(String inputString) {
-        return inputString.replace("[", "").replace("]", "");
-    }
-
-    static Basket loadFromTxtFile(File textFile) {
-        //Заполнение коллекций из файлов
-        ArrayList<String> productName = new ArrayList<>();
-        ArrayList<Integer> productPrice = new ArrayList<>();
-        ArrayList<Integer> basket = new ArrayList<>();
-        try (BufferedReader in = new BufferedReader(new FileReader(textFile))) {
-            String read;
-            while ((read = in.readLine()) != null) {
-
-                String[] splitArray = read.split(";");
-                int fill = 0;
-                for (String value : splitArray) {
-                    String[] splitWord = value.split(",");
-                    fill++;
-                    for (String s : splitWord) {
-                        switch (fill) {
-                            case 1 -> productName.add(s.trim());
-                            case 2 -> productPrice.add(Integer.parseInt(s.trim()));
-                            case 3 -> basket.add(Integer.parseInt(s.trim()));
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        //Перевод значений коллекций в массивы для конструктора
-        String[] productNameParam = productName.toArray(new String[0]);
-        int[] productPriceParam = productPrice.stream()
-                .mapToInt(Integer::intValue)
-                .toArray();
-        int[] basketParam = basket.stream()
-                .mapToInt(Integer::intValue)
-                .toArray();
-
-        return new Basket(productNameParam, productPriceParam, basketParam);
-    }
-
     public void showGoods() {
         System.out.println("Список возможных товаров для покупки");
         for (int i = 0; i < this.productName.length; i++) {
@@ -96,6 +43,28 @@ public class Basket implements Serializable {
     @Override
     public String toString() {
         return (Arrays.toString(this.productName) + "\n" + Arrays.toString(this.productPrice));
+    }
+
+
+    public void saveBin(File serializeFile) {
+        Basket basket = new Basket(this.productName, this.productPrice, this.basket);
+        try (FileOutputStream fos = new FileOutputStream(serializeFile);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(basket);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static Basket loadFromBinFile(File serializeFile) {
+        Basket basket = null;
+        try (FileInputStream fis = new FileInputStream(serializeFile);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            basket = (Basket) ois.readObject();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return basket;
     }
 
 }
