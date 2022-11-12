@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Basket implements Serializable {
 
@@ -49,9 +50,9 @@ public class Basket implements Serializable {
 
     static Basket loadFromTxtFile(File textFile) {
         //Заполнение коллекций из файлов
-        ArrayList<String> productName = new ArrayList<>();
-        ArrayList<Integer> productPrice = new ArrayList<>();
-        ArrayList<Integer> basket = new ArrayList<>();
+        List<String> productName = new ArrayList<>();
+        List<Integer> productPrice = new ArrayList<>();
+        List<Integer> basket = new ArrayList<>();
         try (BufferedReader in = new BufferedReader(new FileReader(textFile))) {
             String read;
             while ((read = in.readLine()) != null) {
